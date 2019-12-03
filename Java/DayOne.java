@@ -14,17 +14,9 @@ class DayOne {
 
         int result = 0;
 
-        String filename = "day1Input.txt";
+        String filename = "Java/day1Input.txt";
         File file = new File(filename);
         Scanner inputFile = new Scanner(file);
-
-       
-        while (inputFile.hasNext()) {
-
-            String nextLine = inputFile.nextLine();
-            result += helper(Integer.parseInt(nextLine)/3 - 2); 
-
-        }
 
        inputFile.close();
 
