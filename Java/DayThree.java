@@ -9,13 +9,16 @@ public class DayThree{
     int[][] graph = new int[1500][1500];
     int[] origin1 = {0,0};
     int[] origin2 = {0,0};
+    HashMap<Integer,HashSet<Integer>> myMap = new HashMap<>();
+    ArrayList<int[]> collisions = new ArrayList<>();
+    int min = Integer.MAX_VALUE;
 
 	public int crossedWires() throws IOException{
 
         List<String> wiresInput = new ArrayList<>();
         
         //scan file
-        String filename = "Java/day3TestInput.txt";
+        String filename = "Java/day3Input.txt";
         File file = new File(filename);
         Scanner inputFile = new Scanner(file);
         while (inputFile.hasNext()) { 
@@ -31,22 +34,33 @@ public class DayThree{
         //plot paths of wire1 
         for (String dir : wire1Dirs) {
 
-            
             markPathFrom(origin1, dir.charAt(0), Integer.parseInt(dir.substring(1,dir.length())), 1);
-            System.out.println("origin1 is now" + Arrays.toString(origin1));
-
+            //System.out.println("origin1 is now" + Arrays.toString(origin1));
+        
         }
+
 
         //plot paths of wire2
         for (String dir : wire2Dirs) {
-            
+
             markPathFrom(origin2, dir.charAt(0), Integer.parseInt(dir.substring(1,dir.length())), 2);
-            System.out.println("origin2 is now" + Arrays.toString(origin2));
+            //System.out.println("origin2 is now" + Arrays.toString(origin2));
+
         }
 
-        int[] finalRes = bfs(graph, 3);
+    
+            //after this is should have all the collisions. return closest one.
+
+            for (int[] collisionCoord : collisions){
+
+                min = Math.min(min, Math.abs(collisionCoord[0]) + Math.abs(collisionCoord[1]));
+
+            }
+
+
+            return min;
        
-     return finalRes[0]+finalRes[1];
+     
 
     }
     
@@ -82,22 +96,36 @@ public class DayThree{
             int newX = (dx[index])*i + origin[0];
             int newY = (dy[index])*i + origin[1];
 
-            if(!((newX <0 && newX> 1000) || (newY<0 && newY>1000))){
+            if (wireNo == 1){
+        
+        
+            if (myMap.get(newX) == null) {
 
-                
-                 if ((wireNo == 1) && (graph[newX][newY] == 2)) { 
-                     graph[newX][newY] = 3;  // collision, mark 3
-                 } 
-                 else if ((wireNo == 2) && (graph[newX][newY] == 1)) {
-                         graph[newX][newY] = 3; // collision, mark 3
-                 } 
-                 else {
+                HashSet<Integer> temp = new HashSet<>();
+                temp.add(newY);
+                myMap.put(newX, temp);
 
-                  graph[newX][newY] = wireNo; // safely mark path with wireNo 
+            } else {
 
-                  }
+                HashSet<Integer> temp = myMap.get(newX);
+                temp.add(newY);
+                myMap.put(newX,temp);
 
-         }
+            }
+
+        } else { //means we are tracking through wire2
+
+            if(myMap.get(newX) != null) { // if x coord has been seen before by wire1 O(1)
+
+                HashSet<Integer> seenYCoords = myMap.get(newX);  //then grab the hashset of matching Ys O(1)
+                if ( seenYCoords.contains(newY)) {  //check if y was also seen before O(1)
+                    int[] temp = {newX,newY};
+                    collisions.add(temp);
+                };
+            }
+
+        }
+
         }
 
         if(wireNo == 1) origin1 = stoppingPoint; // return the new origin point after tracing path.
@@ -105,43 +133,6 @@ public class DayThree{
 
     }
 
-    public int[] bfs(int[][] graph, int findMe) {
-
-        int[] dx= {-1,1,0,0};  
-        int[] dy= {0,0,1,1};
-
-        int[] start = {0,0};
-        Queue<int[]> queue = new LinkedList<>();
-
-        queue.add(start);
-
-        while (!queue.isEmpty()){
-            
-            int[] visit = queue.poll();
-
-            if (graph[visit[0]][visit[1]] == findMe) {
-                return visit;
-            } else {
-
-                for (int i= 0; i<4 ; i++){
-
-                      int x = visit[0] + dx[i];
-                      int y = visit[1] + dy[i];
-                        
-                      if (!((x<0 || x>1500) || (y<0 || y>1500))) { // stay within bounds
-
-                       int[] temp = {x,y};
-                        queue.add(temp);
-
-                        }
-                    }
-                }
-
-        }
-
-        return start;
-
-    }
 
 	public static void main(String[] args){
 	
