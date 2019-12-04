@@ -4,8 +4,24 @@ import java.io.IOException;
 import java.util.*;
 
 
-public class DayThree{
+public class DayThreePart2{
 
+    public class InfoBundle {
+
+        int wireNo;
+        int[] coord;
+        int stepsSoFar;
+
+        public InfoBundle(int wireNo, int[] coord, int stepsSoFar){
+
+            this.wireNo = wireNo;
+            this.coord = coord;
+            this.stepsSoFar = stepsSoFar;
+
+        }
+
+    }
+    ArrayList<InfoBundle> heuristics = new ArrayList<>();
     int[][] graph = new int[1500][1500];
     int[] origin1 = {0,0};
     int[] origin2 = {0,0};
@@ -18,7 +34,7 @@ public class DayThree{
         List<String> wiresInput = new ArrayList<>();
         
         //scan file
-        String filename = "Java/day3Input.txt";
+        String filename = "Java/day3TestInput.txt";
         File file = new File(filename);
         Scanner inputFile = new Scanner(file);
         while (inputFile.hasNext()) { 
@@ -35,50 +51,52 @@ public class DayThree{
         for (String dir : wire1Dirs) {
 
             markPathFrom(origin1, dir.charAt(0), Integer.parseInt(dir.substring(1,dir.length())), 1);
-            //System.out.println("origin1 is now" + Arrays.toString(origin1));
         
         }
-
 
         //plot paths of wire2
         for (String dir : wire2Dirs) {
 
             markPathFrom(origin2, dir.charAt(0), Integer.parseInt(dir.substring(1,dir.length())), 2);
-            //System.out.println("origin2 is now" + Arrays.toString(origin2));
 
         }
-
-    
             //after this is should have all the collisions. return closest one.
 
             for (int[] collisionCoord : collisions){
 
-                System.out.println(Arrays.toString(collisionCoord));
+                
+                //System.out.println(Arrays.toString(collisionCoord));
                 min = Math.min(min, Math.abs(collisionCoord[0]) + Math.abs(collisionCoord[1]));
 
             }
 
+            int[] stepsForCollistions = new int[collisions.size()];
+
+            for (InfoBundle bundle : heuristics) {
+                //System.out.println(Arrays.toString(bundle.coord) + " " + bundle.stepsSoFar);
+                for(int i=0; i<collisions.size(); i++) {
+
+                        if (bundle.coord[0]==collisions.get(i)[0] && bundle.coord[1]==collisions.get(i)[1] ) {
+
+                            stepsForCollistions[i] += bundle.stepsSoFar;
+
+                        } 
+                }
+            }
+            
+            System.out.println(Arrays.toString(stepsForCollistions));
+          
+
 
             return min;
        
-     
-
     }
     
     public void markPathFrom(int[] origin, char direction, int steps, int wireNo) {
 
-        // tracks paths in graph using the number 1 for wire 1, number 2 for wire 2
-        // if i am wire 1 and i see a 2 , change plot to number 3
-        // likewise if i am wire 2 and i see 1 , change plot to number 3
-
-       // int[] L = {-1,0};
-       // int[] R = {1,0};
-      // int[] U = {0,1};
-      //  int[] D = {0,-1};
-
         int index = 0;
+        int totalSteps = 0;
        
-
         //L = 0, R = 1 , U = 2 , D = 3
         int[] dx= {-1,1,0,0};  
         int[] dy= {0,0,1,-1};
@@ -94,11 +112,14 @@ public class DayThree{
 
         for (int i=1; i<=steps; i++){ 
 
+            totalSteps++;
             int newX = (dx[index])*i + origin[0];
             int newY = (dy[index])*i + origin[1];
 
+            int[] tempCo = {newX, newY};
+            heuristics.add(new InfoBundle(wireNo, tempCo, totalSteps));
+
             if (wireNo == 1){
-        
         
             if (myMap.get(newX) == null) {
 
@@ -115,13 +136,15 @@ public class DayThree{
             }
 
         } else { //means we are tracking through wire2
-
+            
+            
             if(myMap.get(newX) != null) { // if x coord has been seen before by wire1 O(1)
 
                 HashSet<Integer> seenYCoords = myMap.get(newX);  //then grab the hashset of matching Ys O(1)
                 if ( seenYCoords.contains(newY)) {  //check if y was also seen before O(1)
                     int[] temp = {newX,newY};
                     collisions.add(temp);
+                    
                 };
             }
 
@@ -137,10 +160,10 @@ public class DayThree{
 
 	public static void main(String[] args){
 	
-    DayThree dayThree = new DayThree();
+    DayThreePart2 dayThree = new DayThreePart2();
     
     try {
-        System.out.println(dayThree.crossedWires());
+        dayThree.crossedWires();
 
     } catch (FileNotFoundException e) {
         e.printStackTrace();
