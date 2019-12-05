@@ -7,7 +7,6 @@ class DayFive {
 
     public void computer(int inputInstruction) {
      
-        
         int i = 0;
         int parOne = 0;
         int parTwo = 0;
@@ -17,8 +16,6 @@ class DayFive {
 
             int instruction = inputArr[i];
             String instString = String.valueOf(instruction);
-            //System.out.println(Arrays.toString(integerInput));
-            //System.out.println("i" + instruction);
             if(instruction == 99) break;	
 
             opCode = (instString.length() < 2 ) ? instruction : Character.getNumericValue(instString.charAt(instString.length()-1)) + ( (Character.getNumericValue(instString.charAt(instString.length()-2)) * 10));
@@ -50,9 +47,7 @@ class DayFive {
             
            
         }
-        
-   
-		
+    
 
     }
 
@@ -61,7 +56,7 @@ class DayFive {
     public static void main(String[] args){
 
         DayFive five = new DayFive();
-        
+
         five.computer(1);
 
 
