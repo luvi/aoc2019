@@ -35,7 +35,7 @@ public class DayThreePart2 {
         List<String> wiresInput = new ArrayList<>();
 
         // scan file
-        String filename = "Java/day3Input.txt";
+        String filename = "Java/DayThree/day3Input.txt";
         File file = new File(filename);
         Scanner inputFile = new Scanner(file);
         while (inputFile.hasNext()) {

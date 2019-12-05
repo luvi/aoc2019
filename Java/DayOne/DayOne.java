@@ -14,7 +14,7 @@ class DayOne {
 
         int result = 0;
 
-        String filename = "Java/day1Input.txt";
+        String filename = "Java/DayOne/day1Input.txt";
         File file = new File(filename);
         Scanner inputFile = new Scanner(file);
 

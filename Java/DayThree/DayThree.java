@@ -18,7 +18,7 @@ public class DayThree{
         List<String> wiresInput = new ArrayList<>();
         
         //scan file
-        String filename = "Java/day3Input.txt";
+        String filename = "Java/DayThree/day3Input.txt";
         File file = new File(filename);
         Scanner inputFile = new Scanner(file);
         while (inputFile.hasNext()) { 
@@ -35,7 +35,6 @@ public class DayThree{
         for (String dir : wire1Dirs) {
 
             markPathFrom(origin1, dir.charAt(0), Integer.parseInt(dir.substring(1,dir.length())), 1);
-            //System.out.println("origin1 is now" + Arrays.toString(origin1));
         
         }
 
@@ -44,7 +43,6 @@ public class DayThree{
         for (String dir : wire2Dirs) {
 
             markPathFrom(origin2, dir.charAt(0), Integer.parseInt(dir.substring(1,dir.length())), 2);
-            //System.out.println("origin2 is now" + Arrays.toString(origin2));
 
         }
 
@@ -53,16 +51,12 @@ public class DayThree{
 
             for (int[] collisionCoord : collisions){
 
-                System.out.println(Arrays.toString(collisionCoord));
                 min = Math.min(min, Math.abs(collisionCoord[0]) + Math.abs(collisionCoord[1]));
 
             }
 
-
             return min;
-       
-     
-
+    
     }
     
     public void markPathFrom(int[] origin, char direction, int steps, int wireNo) {
@@ -78,7 +72,6 @@ public class DayThree{
 
         int index = 0;
        
-
         //L = 0, R = 1 , U = 2 , D = 3
         int[] dx= {-1,1,0,0};  
         int[] dy= {0,0,1,-1};
@@ -140,6 +133,7 @@ public class DayThree{
     DayThree dayThree = new DayThree();
     
     try {
+
         System.out.println(dayThree.crossedWires());
 
     } catch (FileNotFoundException e) {

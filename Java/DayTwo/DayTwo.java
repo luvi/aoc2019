@@ -10,7 +10,7 @@ public class DayTwo{
         StringBuilder builder = new StringBuilder();
 
         //scan file
-        String filename = "Java/day2Input.txt";
+        String filename = "Java/DayTwo/day2Input.txt";
         File file = new File(filename);
         Scanner inputFile = new Scanner(file);
         while (inputFile.hasNext()) { 
